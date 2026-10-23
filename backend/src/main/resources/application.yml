@@ -1,0 +1,26 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: wallet-api
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:3306/wallet_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD:root}
+  jpa:
+    hibernate:
+      ddl-auto: update   # use Flyway/Liquibase migrations in production
+    open-in-view: false
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: 6379
+app:
+  jwt:
+    secret: ${JWT_SECRET:change-this-secret-to-32-plus-random-characters}
+    expiry-minutes: 30
+  cors:
+    origins: http://localhost:5173
+  rate-limit:
+    auth-per-minute: 10
+    api-per-minute: 60

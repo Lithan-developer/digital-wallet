@@ -1,0 +1,24 @@
+<configuration>
+  <property name="LOG_DIR" value="${LOG_DIR:-logs}"/>
+
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder><pattern>%d{ISO8601} %-5level [%X{requestId}] %logger{30} - %msg%n</pattern></encoder>
+  </appender>
+
+  <!-- Immutable-style compliance trail: one line per security/financial event, kept 90 days -->
+  <appender name="AUDIT_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${LOG_DIR}/audit.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>${LOG_DIR}/audit.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+      <maxHistory>90</maxHistory>
+    </rollingPolicy>
+    <encoder><pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} requestId=%X{requestId} %msg%n</pattern></encoder>
+  </appender>
+
+  <logger name="AUDIT" level="INFO" additivity="false">
+    <appender-ref ref="AUDIT_FILE"/>
+    <appender-ref ref="CONSOLE"/>
+  </logger>
+
+  <root level="INFO"><appender-ref ref="CONSOLE"/></root>
+</configuration>
